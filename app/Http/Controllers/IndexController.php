@@ -11,6 +11,7 @@ class IndexController extends Controller
     public function index()
     {
         $faker = Factory::create();
+
         return $faker->firstNameMale;
     }
 }
