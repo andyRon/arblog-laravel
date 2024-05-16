@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('subtitle');
             $table->string('page_image')->comment('标签图片');
             $table->string('meta_description')->comment('标签介绍');
-            $table->string('layout')->default('blog.layouts.index')->comment('博客终归要使用布局');
-            $table->boolean('reverse_direction');
+            $table->string('layout')->default('blog.layouts.index')->comment('布局');
+            $table->boolean('reverse_direction')->comment('排序');
             $table->timestamps();
         });
     }

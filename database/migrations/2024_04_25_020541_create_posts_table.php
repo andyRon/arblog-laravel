@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
+            $table->comment('文章表');
             $table->id();
-            $table->string('slug')->unique();
+            $table->string('slug')->unique()->comment('将文章标题转化为 URL 的一部分，以利于SEO');
             $table->string('title');
             $table->text('content');
-            $table->softDeletes();
+            $table->softDeletes()->comment('用于支持软删除');  // 字段 deleted_at
             $table->timestamp('published_at')->nullable()->comment('文章正式发布时间');
             $table->timestamps();
         });

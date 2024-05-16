@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Post;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class PostsTableSeeder extends Seeder
 {
@@ -14,8 +12,7 @@ class PostsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('posts')->truncate();
-
-        Post::factory()->count(20)->create();
+//        Post::truncate();  // 先清理表数据
+        Post::factory(20)->create(); // 一次填充20篇文章
     }
 }

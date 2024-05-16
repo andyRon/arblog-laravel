@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('blog.title') }} 管理后台</title>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @vite('resources/sass/app.scss')
     @yield('styles')
 
 </head>
@@ -30,7 +30,7 @@
 <main class="py-4">
     @yield('content')
 </main>
-<script src="{{ asset('js/app.js') }}"></script>
+@vite('resources/js/app.js')
 
 @yield('scripts')
 </body>

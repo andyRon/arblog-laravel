@@ -1,7 +1,7 @@
 <html>
 <head>
     <title>{{ $post->title }}</title>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @vite('resources/sass/app.scss')
 </head>
 <body>
 <div class="container">

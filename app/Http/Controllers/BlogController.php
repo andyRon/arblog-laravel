@@ -14,6 +14,7 @@ class BlogController extends Controller
         $posts = DB::table('posts')->where('published_at', '<=', Carbon::now())
             ->orderBy('published_at', 'desc')
             ->paginate(config('blog.posts_per_page'));
+
         return view('blog.index', compact('posts'));
     }
 

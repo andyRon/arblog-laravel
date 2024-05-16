@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_tag_pivot', function (Blueprint $table) {
+            $table->comment('文章与标签关系表');
             $table->id();
             $table->integer('post_id')->unsigned()->index();
             $table->integer('tag_id')->unsigned()->index();
