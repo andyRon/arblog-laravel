@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,3 +60,8 @@ Route::get('/admin', function () {
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 //Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+// 联系我们
+Route::get('contact', [ContactController::class, 'showForm']);
+Route::post('contact', [ContactController::class, 'sendContactInfo']);
