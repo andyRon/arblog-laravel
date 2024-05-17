@@ -14,6 +14,7 @@ class Tag extends Model
         'tag', 'title', 'subtitle', 'page_image', 'meta_description','reverse_direction',
     ];
 
+
     /**
      * 定义文章与标签之间多对多关联关系
      * @return BelongsToMany
@@ -41,5 +42,16 @@ class Tag extends Model
                 'reverse_direction' => false,
             ]);
         }
+    }
+
+
+    /**
+     * 返回标签的布局
+     */
+    public static function layout(string $tag, $default = 'blog.layouts.index')
+    {
+        $layout = static::where('tag', $tag)->get()->pluck('layout')->first();
+
+        return $layout ?: $default;
     }
 }

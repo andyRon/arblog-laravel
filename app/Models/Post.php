@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\Markdowner;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -113,5 +114,80 @@ class Post extends Model
     public function getContentAttribute($value)
     {
         return $this->content_raw;
+    }
+
+
+    /**
+     * 文章详情页链接
+     *
+     * @param Tag|null $tag
+     * @return string
+     */
+    public function url(Tag $tag = null): string
+    {
+        $url = url('blog/' . $this->slug);
+        if ($tag) {
+            $url .= '?tag=' . urlencode($tag->tag);
+        }
+
+        return $url;
+    }
+
+    /**
+     * 返回一个链接数组，每个链接都会指向首页并带上标签参数
+     *
+     * @param string $base
+     * @return array
+     */
+    public function tagLinks($base = '/blog?tag=%TAG%')
+    {
+        $tags = $this->tags()->get()->pluck('tag')->all();
+        $return = [];
+        foreach ($tags as $tag) {
+            $url = str_replace('%TAG%', urlencode($tag), $base);
+            $return[] = '<a href="' . $url . '">' . e($tag) . '</a>';
+        }
+        return $return;
+    }
+
+    /**
+     * 返回下一篇文章链接
+     *
+     * @param Tag|null $tag
+     * @return Post
+     */
+    public function newerPost(Tag $tag = null): Post
+    {
+        $query = static::where('published_at', '>', $this->published_at)
+                ->where('published_at', '<=', Carbon::now())
+                ->where('is_draft', 0)
+                ->orderBy('published_at', 'asc');
+        if ($tag) {
+            $query = $query->whereHas('tags', function ($q) use ($tag) {
+                $q->where('tag', '=', $tag->tag);
+            });
+        }
+
+        return $query->first();
+    }
+
+    /**
+     * 返回前一篇文章链接
+     *
+     * @param Tag|null $tag
+     * @return Post
+     */
+    public function olderPost(Tag $tag = null): Post
+    {
+        $query = static::where('published_at', '<', $this->published_at)
+                ->where('is_draft', 0)
+                ->orderBy('published_at', 'desc');
+        if ($tag) {
+            $query = $query->whereHas('tags', function ($q) use ($tag) {
+                $q->where('tag', '=', $tag->tag);
+            });
+        }
+
+        return $query->first();
     }
 }

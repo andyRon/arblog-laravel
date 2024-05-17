@@ -1,7 +1,11 @@
 <?php
 
 return [
+    'name' => 'arblog',
     'title' => 'arblog-laravel',
+    'subtitle' => 'arblog',
+    'description' => '使用Laravel构建的博客',
+    'author' => 'andyron',
     'posts_per_page' => 5,
     'uploads' => [
         'storage' => 'public',

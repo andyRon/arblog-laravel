@@ -742,6 +742,99 @@ php artisan make:request PostUpdateRequest
 
 ## 7 Claen Blog主题&完善博客前台
 
+### 1️⃣使用 Clean Blog
+
+
+
+```sh
+npm install startbootstrap-clean-blog --save-dev
+```
+
+
+
+管理 Clean Blog
+
+```scss
+@import "startbootstrap-clean-blog/scss/clean-blog";
+```
+
+
+
+上传顶部背景图片
+
+🔖
+
+
+
+### 2️⃣创建PostService服务
+
+
+
+### 3️⃣更新控制器BlogController
+
+
+
+### 4️⃣引入前端资源
+
+编辑 blog.js
+编辑 app.sass
+
+
+
+### 5️⃣创建博客视图
+
+删除 `resources/views/blog` 目录下创建的 index.blade.php 和 post.blade.php。
+
+创建 blog.layouts.master 视图
+创建 blog.layouts.index 视图
+创建 blog.layouts.post 视图
+创建 blog.partials.page-nav 视图
+创建 blog.partials.page-footer 视图
+
+### 6️⃣添加模型方法
+
+#### 更新 Tag 模型
+
+#### 更新 Post 模型
+
+### 7️⃣更新博客设置
+
+### 8️⃣更新示例数据
+
+数据库改变了，相应的填充器和模型工厂也要修改，以便重新填充数据库的标签和其它新增字段。
+
+#### 更新数据库填充器
+
+
+
+#### 更新模型工厂
+
+
+
+```sh
+php artisan make:factory TagFactory --model=Tag
+```
+
+
+
+#### 填充数据库
+
+
+
+```sh
+composer dumpauto
+```
+
+```sh
+php artisan db:seed
+```
+
+
+
+### 9️⃣访问博客首页及详情页
+
+
+
 
 
 ## 8 前台联系我们&邮件发送功能

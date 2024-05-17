@@ -13,6 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([PostsTableSeeder::class]);
+        Model::unguard();  // 取消批量赋值白名单、黑名单属性校验
+
+        $this->call(TagsTableSeeder::class);
+        $this->call(PostsTableSeeder::class);
+
+        Model::reguard(); // 恢复校验
     }
 }
