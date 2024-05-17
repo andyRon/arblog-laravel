@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 
 class UploadController extends Controller
 {
-    protected $manager;
+    protected UploadsManager $manager;
 
     public function __construct(UploadsManager $manager)
     {

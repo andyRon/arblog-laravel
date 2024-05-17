@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TagCreateRequest;
+use App\Http\Requests\TagUpdateRequest;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class TagController extends Controller
 {
-    protected $fields = [
+    protected array $fields = [  // TODO
         'tag' => '',
         'title' => '',
         'subtitle' => '',
@@ -37,7 +39,7 @@ class TagController extends Controller
     {
         $data = [];
         foreach ($this->fields as $field => $default) {
-            $data[$field] = old($field, $default);
+            $data[$field] = old($field, $default);  // TODO
         }
 
         return view('admin.tag.create', $data);
@@ -46,7 +48,7 @@ class TagController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TagCreateRequest $request)
     {
         $tag = new Tag();
         foreach (array_keys($this->fields) as $field) {
@@ -57,19 +59,11 @@ class TagController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        $tag = DB::table('tags')->find($id);
+        $tag = Tag::findOrFail($id);        // TODO  编码时没有提示？
         $data = ['id' => $id];
         foreach (array_keys($this->fields) as $field) {
             $data[$field] = old($field, $tag->$field);
@@ -81,16 +75,15 @@ class TagController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(TagUpdateRequest $request, string $id)
     {
-        $tag = DB::table('tags')->find($id);
+        $tag = Tag::findOrFail($id);
         foreach (array_keys(Arr::except($this->fields, ['tag'])) as $field) {
             $tag->$field = $request->get($field);
         }
         $tag->save();
 
-        return redirect('/admin/tag/$id/edit')
-            -with('success', '修改已保存.');
+        return redirect("/admin/tag/$id/edit")->with('success', '修改已保存.');
     }
 
     /**
@@ -98,7 +91,7 @@ class TagController extends Controller
      */
     public function destroy(string $id)
     {
-        $tag = Tag::find($id);  // TODO
+        $tag = Tag::findOrFail($id);
         $tag->delete();
 
         return redirect('/admin/tag')

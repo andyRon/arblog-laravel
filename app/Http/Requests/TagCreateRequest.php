@@ -10,7 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class TagCreateRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * 验证用户是否经过登录认证
      */
     public function authorize(): bool
     {
@@ -18,7 +18,7 @@ class TagCreateRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * 返回验证规则数组
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */

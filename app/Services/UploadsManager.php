@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Dflydev\ApacheMimeTypes\PhpRepository;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * 文件上传管理
+ */
 class UploadsManager
 {
     protected $disk;

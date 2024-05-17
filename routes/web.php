@@ -45,10 +45,11 @@ Route::get('/admin', function () {
     return redirect('/admin/post');
 });
 //Route::middleware('auth')->group(function () {
-    Route::resource('admin/post', PostController::class);
+    Route::resource('admin/post', PostController::class, ['except' => 'show']);
     Route::resource('admin/tag', TagController::class, ['except' => 'show']);
     Route::get('admin/upload', [UploadController::class, 'index']);
 
+    // 上传相关路由
     Route::post('admin/upload/file', [UploadController::class, 'uploadFile']);
     Route::delete('admin/upload/file', [UploadController::class, 'deleteFile']);
     Route::post('admin/upload/folder', [UploadController::class, 'createFolder']);

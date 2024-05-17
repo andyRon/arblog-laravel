@@ -399,36 +399,358 @@ npm install @fortawesome/fontawesome-free --save-dev
 
 
 
+## 4 后台文章标签增删改查
+
+### 1️⃣创建标签模型和迁移
+
+```sh
+php artisan make:model Tag --migration
+```
+
+标签（Tag）和文章（Post）之间存在多对多的关联关系，需要要按照下面的命令创建存放文章和标签对应关系的数据表迁移：
+
+```sh
+php artisan make:migration create_post_tag_pivot --create=post_tag_pivot
+```
+
+
+
+编辑两个迁移文件
+
 
 
 ```sh
-composer require laravel/breeze --dev
-php artisan breeze:install
+php artisan migrate
+```
+
+
+
+### 2️⃣实现admin.tag.index
+
+
+
+### 3️⃣实现admin.tag.create
+
+
+
+### 4️⃣实现admin.tag.store
+
+创建标签表单，还需要编写表单被提交后保存标签的业务逻辑代码。
+
+#### 创建表单请求类TagCreateRequest
+
+```sh
+php artisan make:request TagCreateRequest
+```
+
+```php
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+/**
+ * 表单被提交后保存标签的业务逻辑代码
+ */
+class TagCreateRequest extends FormRequest
+{
+    /**
+     * 验证用户是否经过登录认证
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * 返回验证规则数组
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'tag' => 'bail|required|unique:tags,tag',
+            'title' => 'required',
+            'subtitle' => 'required',
+            'layout' => 'required',
+        ];
+    }
+}
+```
+
+表单请求的神奇之处在于会在表单请求类实例化的时候对请求进行验证，如果验证失败，会直接返回表单提交页面并显示错误信息。这意味着**如果将表单请求作为控制器方法参数，那么验证工作将会在执行对应方法第一行代码之前进行**。
+
+#### 实现TagController@store
+
+```php
+    public function store(TagCreateRequest $request)
+    {
+        $tag = new Tag();
+        foreach (array_keys($this->fields) as $field) {
+            $tag->$field = $request->get($field);
+        }
+        $tag->save();
+        return redirect('/admin/tag')->with('success', '标签「' . $tag->tag . '」创建成功.');
+    }
+```
+
+通过依赖注入，`TagCreateRequest` 被构造、表单被验证，只有验证通过后才会将请求参数传递到 `store` 方法。`store` 方法接下来才会创建并保存新的 `Tag` 实例。最后，页面重定向到后台标签列表，并带上保存成功消息
+
+### 5️⃣实现admin.tag.edit
+
+
+
+### 6️⃣实现admin.tag.update
+
+#### 创建表单请求类TagUpdateRequest
+
+```sh
+php artisan make:request TagUpdateRequest
+```
+
+
+
+#### 实现TagController@update
+
+
+
+### 7️⃣实现标签删除功能
+
+#### 实现 TagController@destroy
+
+
+
+#### 移除 admin.tag.show
+
+
+
+
+
+
+
+## 5 后台文件上传管理
+
+文件上传管理包括：文件上传、预览及删除、目录创建及删除。
+
+### 1️⃣配置本地文件系统
+
+Laravel中，通过Web公开访问的资源默认存放在`storage/app/public`目录。
+
+```sh
+php artisan storage:link
+```
+
+会在根目录下的 `public` 目录中创建一个软链 `storage` 指向 `storage/app/public` 目录
+
+### 2️⃣创建辅助函数文件
+
+不依赖于类的辅助函数，`app\helpers.php`
+
+要让应用能够正确找到 `helpers.php` 文件，还要在`composer.json` 的 `autoload` 中添加配置：
+
+```json
+    "autoload": {
+      	...
+        "files": [
+            "app/helpers.php"
+        ]
+    }
+```
+
+`composer dumpauto`
+
+### 3️⃣创建文件上传管理服务
+
+
+
+```sh
+composer require "dflydev/apache-mime-types"
 ```
 
 
 
 
 
+### 4️⃣文件上传管理列表
 
 
 
+### 5️⃣完成文件上传管理
 
 
 
-🔖   sass   DataTables
-
-
-
-## 后台文件上传
-
-默认存放在 `storage/app/public` 目录下
-
-
-
-## 在后台实现文章增删改查功能（支持Markdown）
+### 6️⃣测试文件上传和删除
 
 🔖
+
+
+
+## 6 后台文章增删改查功能（支持Markdown）
+
+### 1️⃣修改posts表
+
+#### 安装Doctrine依赖包
+
+Laravel中需要Doctrine包，修改数据表的列：
+
+```sh
+composer require doctrine/dbal
+```
+
+#### 创建表迁移文件
+
+```sh
+php artisan make:migration restructure_posts_table --table=posts
+```
+
+```php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+/**
+ * 修改posts表
+ */
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('posts', function (Blueprint $table) {
+            $table->string('subtitle')->after('title')->comment('文章副标题');  // 在title列后添加subtitle列
+            $table->renameColumn('content', 'content_raw');
+            $table->text('content_html')->after('content');
+            $table->string('page_image')->after('content_html')->comment('文章缩略图（封面图）');
+            $table->string('meta_description')->after('page_image')->comment('文章备注说明');
+            $table->boolean('is_draft')->after('meta_description')->comment('是否是草稿');
+            $table->string('layout')->after('is_draft')->default('blog.layouts.post')->comment('布局');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('posts', function (Blueprint $table) {
+            Schema::table('posts', function (Blueprint $table) {
+                $table->dropColumn('layout');
+                $table->dropColumn('is_draft');
+                $table->dropColumn('meta_description');
+                $table->dropColumn('page_image');
+                $table->dropColumn('content_html');
+                $table->renameColumn('content_raw', 'content');
+                $table->dropColumn('subtitle');
+            });
+        });
+    }
+};
+```
+
+#### 运行迁移
+
+```sh
+php artisan migrate
+```
+
+
+
+### 2️⃣创建 Markdown 服务
+
+#### 安装 Markdown 依赖包
+
+https://github.com/michelf/php-markdown
+
+```sh
+composer require michelf/php-markdown 
+composer require michelf/php-smartypants
+```
+
+#### 创建 Markdowner 服务
+
+
+
+
+
+### 3️⃣修改相关模型
+
+编辑 `Post` 模型类和 `Tag` 模型类来建立两者之间的关联关系。
+
+
+
+
+
+### 4️⃣引入 Selectize.js 和 Pickadate.js
+
+#### 使用 NPM 下载资源
+
+[selectize/selectize.js](https://github.com/selectize/selectize.js/)  Selectize.js 是一个基于 jQuery 的 UI 控件，对于标签选择和下拉列表功能非常有用。
+
+```sh
+npm install selectize --save-dev
+```
+
+https://amsul.ca/pickadate.js/  Pickadate.js 是一个轻量级的 jQuery 日期时间选择插件，日期时间插件很多，选择使用 Pickadate.js 的原因是它在小型设备上也有很好的体验。
+
+```sh
+npm install pickadate --save-dev
+```
+
+
+
+#### 管理前端资源
+
+🔖
+
+
+
+### 5️⃣创建表单请求类
+
+```sh
+php artisan make:request PostCreateRequest 
+php artisan make:request PostUpdateRequest
+```
+
+
+
+
+
+### 6️⃣添加辅助函数
+
+
+
+### 7️⃣修改 Post 模型
+
+
+
+### 8️⃣修改 PostController 控制器
+
+
+
+### 9️⃣创建文章视图
+
+🔖
+
+### 1️⃣0️⃣移除 show 路由
+
+### 1️⃣1️⃣测试后台文章增删改查功能
+
+
+
+
+
+## 7 Claen Blog主题&完善博客前台
+
+
+
+## 8 前台联系我们&邮件发送功能
+
+
+
+## 9 评论、RSS订阅和站点地图功能
+
+
 
 
 
@@ -440,4 +762,5 @@ bug
 
 - [ ] 文章列表页分页样式
 - [ ] Auth  lar10新版本
+- [ ] 标签列表页 $
 
