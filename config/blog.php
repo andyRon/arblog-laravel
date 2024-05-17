@@ -12,5 +12,6 @@ return [
         'webpath' => '/storage',
     ],
     'page_image' => 'home-bg.jpg',
+    'rss_size' => 25,
 
 ];

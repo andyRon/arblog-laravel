@@ -65,3 +65,7 @@ Route::post('/login', [LoginController::class, 'login']);
 // 联系我们
 Route::get('contact', [ContactController::class, 'showForm']);
 Route::post('contact', [ContactController::class, 'sendContactInfo']);
+
+Route::get('rss', [BlogController::class, 'rss']);
+
+Route::get('sitemap.xml', [BlogController::class, 'siteMap']);

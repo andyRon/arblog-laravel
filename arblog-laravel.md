@@ -909,9 +909,51 @@ php artisan migrate
 
 
 
-## 9 评论、RSS订阅和站点地图功能
+## 9 评论、RSS订阅和站点地图
+
+### 1️⃣评论的问题
+
+如何有效防止垃圾评论？使用验证码？黑名单/白名单？
+
+### 2️⃣添加Disqus评论框 🔖
+
+注册 Disqus 账户并获取评论代码
+创建 Disqus 评论局部视图
+更新博客详情页视图文件
+
+### 3️⃣添加分享链接🔖
+
+除了评论之外，很多博客还支持分享文章或站点到社交媒体功能，比如微信、微博、QQ、豆瓣、Facebook、Twitter等。要实现这一功能，可以借助百度分享或者 JiaThis 之类的第三方分享代码工具，还可以通过 overture 维护的 [Share.js](https://github.com/overtrue/share.js/) 来实现。
+
+### 4️⃣RSS订阅
+
+安装 Composer 依赖包
+
+```sh
+composer require suin/php-rss-writer
+```
 
 
+
+#### 创建RSS订阅服务
+
+
+
+#### 更新博客配置
+
+
+
+#### 添加RSS 路由、链接和方法
+
+
+
+### 5️⃣生成站点地图
+
+#### 创建SiteMap服务
+
+
+
+#### 添加路由和控制器方法
 
 
 
