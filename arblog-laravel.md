@@ -963,7 +963,7 @@ composer require suin/php-rss-writer
 
 bug
 
-- [ ] 文章列表页分页样式
 - [ ] Auth  lar10新版本
 - [ ] 标签列表页 $
+- [ ] 邮件发送错误
 

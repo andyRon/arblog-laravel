@@ -33,7 +33,9 @@ class PostService
             ->where('published_at', '<=', Carbon::now())
             ->where('is_draft', 0)
             ->orderBy('published_at', 'desc')
-            ->simplePaginate(config('blog.posts_per_page'));
+            ->paginate(config('blog.posts_per_page'))
+//            ->simplePaginate(config('blog.posts_per_page'))
+        ;
 
         return [
             'title' => config('blog.title'),

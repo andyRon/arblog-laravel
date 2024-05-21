@@ -2,7 +2,7 @@
 
 return [
     'name' => 'arblog',
-    'title' => 'arblog-laravel',
+    'title' => 'arblog',
     'subtitle' => 'arblog',
     'description' => '使用Laravel构建的博客',
     'author' => 'andyron',

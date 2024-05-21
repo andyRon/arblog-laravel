@@ -7,13 +7,18 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
 class Post extends Model
 {
     use HasFactory;
 
-    protected $dates = ['published_at'];
+    // 老版本是$dates属性，表示这些字段将被自动转换为 Carbon 实例
+    protected $casts = [
+        'published_at' => 'datetime'
+    ];
 
     protected $fillable = [
         'title', 'subtitle', 'content_raw', 'page_image', 'meta_description', 'layout', 'is_draft', 'published_at',
@@ -158,7 +163,8 @@ class Post extends Model
      */
     public function newerPost(Tag $tag = null): Post
     {
-        $query = static::where('published_at', '>', $this->published_at)
+        $query = static::query()
+                ->where('published_at', '>', $this->published_at)
                 ->where('published_at', '<=', Carbon::now())
                 ->where('is_draft', 0)
                 ->orderBy('published_at', 'asc');
@@ -168,7 +174,8 @@ class Post extends Model
             });
         }
 
-        return $query->first();
+        return $query->first();  // TODO
+
     }
 
     /**

@@ -45,7 +45,7 @@ Route::get('/blog/{slug}', [BlogController::class, 'showPost'])->name('blog.deta
 Route::get('/admin', function () {
     return redirect('/admin/post');
 });
-//Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::resource('admin/post', PostController::class, ['except' => 'show']);
     Route::resource('admin/tag', TagController::class, ['except' => 'show']);
     Route::get('admin/upload', [UploadController::class, 'index']);
@@ -55,11 +55,11 @@ Route::get('/admin', function () {
     Route::delete('admin/upload/file', [UploadController::class, 'deleteFile']);
     Route::post('admin/upload/folder', [UploadController::class, 'createFolder']);
     Route::delete('admin/upload/folder', [UploadController::class, 'deleteFolder']);
-//});
+});
 // 登录退出
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
-//Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 // 联系我们

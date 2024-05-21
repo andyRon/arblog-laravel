@@ -26,6 +26,7 @@ class BlogController extends Controller
         $postService = new PostService($tag);
         $data = $postService->lists();
         $layout = $tag ? Tag::layout($tag) : 'blog.layouts.index';
+
         return view($layout, $data);
     }
 
@@ -34,14 +35,12 @@ class BlogController extends Controller
      */
     public function showPost($slug, Request $request): View
     {
-//        $post = DB::table('posts')->where('slug', $slug)->first();
-//        return view('blog.post', ['post' => $post]);
-
         $post = Post::with('tags')->where('slug', $slug)->firstOrFail();
         $tag = $request->get('tag');
         if ($tag) {
             $tag = Tag::where('tag', $tag)->firstOrFail();
         }
+
         return view($post->layout, compact('post', 'tag'));
     }
 

@@ -17,15 +17,15 @@
     @yield('styles')
 </head>
 <body>
-@include('blog.partials.page-nav')
+    @include('blog.partials.page-nav')
 
-@yield('page-header')
+    @yield('page-header')
 
-@yield('content')
+    @yield('content')
 
-@include('blog.partials.page-footer')
+    @include('blog.partials.page-footer')
 
-{{-- Scripts --}}
-@yield('scripts')
+    {{-- Scripts --}}
+    @yield('scripts')
 </body>
 </html>
