@@ -150,7 +150,7 @@ class Post extends Model
         $return = [];
         foreach ($tags as $tag) {
             $url = str_replace('%TAG%', urlencode($tag), $base);
-            $return[] = '<a href="' . $url . '">' . e($tag) . '</a>';
+            $return[] = '<a href="' . $url . '" class="badge badge-pill badge-success">' . e($tag) . '</a>';
         }
         return $return;
     }
@@ -174,7 +174,7 @@ class Post extends Model
             });
         }
 
-        return $query->first();  // TODO
+        return $query->first() ?? new Post();  // TODO
 
     }
 
@@ -195,6 +195,6 @@ class Post extends Model
             });
         }
 
-        return $query->first();
+        return $query->first() ?? new Post();
     }
 }

@@ -30,9 +30,8 @@
                             @endif
                         </a>
                         <p class="post-meta">
-                            Posted on {{ $post->published_at->format('Y-m-d') }}
+                            发表于 {{ $post->published_at->format('Y-m-d') }}
                             @if ($post->tags->count())
-                                in
                                 {!! join(', ', $post->tagLinks()) !!}
                             @endif
                         </p>
